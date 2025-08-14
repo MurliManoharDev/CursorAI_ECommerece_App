@@ -1,0 +1,107 @@
+<div class="my-orders-container">
+  <div class="page-header">
+    <h1>My Orders</h1>
+    <p class="subtitle">Track and manage your orders</p>
+  </div>
+
+  <div class="orders-content">
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p>Loading your orders...</p>
+    </div>
+
+    <!-- No Orders State -->
+    <div class="no-orders" *ngIf="!loading && orders.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-shopping-bag"></i>
+      </div>
+      <h2>No orders yet</h2>
+      <p>When you place your first order, it will appear here.</p>
+      <button class="btn btn-primary" routerLink="/">Start Shopping</button>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-list" *ngIf="!loading && orders.length > 0">
+      <div class="order-card" *ngFor="let order of orders">
+        <div class="order-header">
+          <div class="order-info">
+            <h3>Order #{{order.orderNumber}}</h3>
+            <p class="order-date">{{order.createdAt | date:'medium'}}</p>
+          </div>
+          <div class="order-status" [ngClass]="getStatusClass(order.status)">
+            <i [class]="getStatusIcon(order.status)"></i>
+            {{getStatusDisplay(order.status)}}
+          </div>
+        </div>
+
+        <div class="order-body">
+          <div class="order-details">
+            <div class="detail-item">
+              <span class="label">Items:</span>
+              <span class="value">{{order.itemCount}} item(s)</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Total:</span>
+              <span class="value">${{order.total.toFixed(2)}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Payment:</span>
+              <span class="value payment-status" [ngClass]="getPaymentStatusClass(order.paymentStatus)">
+                {{getPaymentStatusDisplay(order.paymentStatus)}}
+              </span>
+            </div>
+          </div>
+
+          <div class="order-actions">
+            <button class="btn btn-view" (click)="viewOrder(order.id)">
+              <i class="fas fa-eye"></i> View Details
+            </button>
+            <button class="btn btn-track" *ngIf="canTrackOrder(order.status)" (click)="trackOrder(order)">
+              <i class="fas fa-truck"></i> Track Order
+            </button>
+            <button class="btn btn-cancel" *ngIf="canCancelOrder(order.status)" (click)="cancelOrder(order)">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </div>
+
+        <!-- Order Timeline -->
+        <div class="order-timeline" *ngIf="selectedOrderId === order.id && orderDetails">
+          <h4>Order Timeline</h4>
+          <div class="timeline">
+            <div class="timeline-item" *ngFor="let history of orderDetails.statusHistory" [ngClass]="{'active': true}">
+              <div class="timeline-marker">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="timeline-content">
+                <h5>{{history.status}}</h5>
+                <p class="timeline-date">{{history.createdAt | date:'medium'}}</p>
+                <p class="timeline-notes" *ngIf="history.notes">{{history.notes}}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Items -->
+          <div class="order-items-section">
+            <h4>Order Items</h4>
+            <div class="order-items">
+              <div class="item" *ngFor="let item of orderDetails.orderItems">
+                <img [src]="item.productImage || '/assets/images/placeholder.png'" [alt]="item.productName">
+                <div class="item-details">
+                  <h5>{{item.productName}}</h5>
+                  <p>Quantity: {{item.quantity}} × ${{item.price.toFixed(2)}}</p>
+                </div>
+                <div class="item-total">
+                  ${{item.total.toFixed(2)}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

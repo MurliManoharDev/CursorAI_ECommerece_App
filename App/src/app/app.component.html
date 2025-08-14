@@ -1,0 +1,35 @@
+<div class="app-container">
+  <!-- Top Bar Section moved to very top -->
+  <div class="top-bar-section">
+    <div class="container">
+      <div class="hotline">
+        <i class="fas fa-phone-alt"></i>
+        <span>Hotline 24/7 <strong>(025) 3886 25 16</strong></span>
+      </div>
+      <div class="right-content">
+        <a href="#">Sell on Swoo</a>
+        <a href="#">Order Tracki</a>
+        <div class="dropdown">
+          <button class="dropbtn">
+            <i class="fas fa-dollar-sign"></i> USD <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn">
+            <img src="assets/images/eng.png" alt="English" /> Eng <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <app-header></app-header>
+    <app-top-bar></app-top-bar>
+    <app-main-menu></app-main-menu>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+    <app-footer></app-footer>
+  </div>
+</div> 

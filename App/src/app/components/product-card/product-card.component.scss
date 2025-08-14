@@ -1,0 +1,240 @@
+.product-card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-color: #e0e0e0;
+  }
+
+  .product-image {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; // 1:1 aspect ratio
+    background-color: #f8f8f8;
+    overflow: hidden;
+    
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 10px;
+    }
+    .wishlist-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #fff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      z-index: 2;
+
+      &:hover {
+        background-color: #fee;
+        transform: scale(1.1);
+      }
+
+      &.active {
+        background-color: #fee;
+        
+        i {
+          color: #e74c3c;
+        }
+      }
+
+      i {
+        font-size: 14px;
+        color: #666;
+        transition: color 0.3s ease;
+      }
+    }
+    .new-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #222;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .sale-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #1aba1a;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      z-index: 2;
+      text-align: center;
+      line-height: 1.2;
+      min-width: 60px;
+    }
+    .new-tag + .sale-tag {
+      top: 35px;
+    }
+  }
+
+  .product-info {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .rating {
+      color: #ffa500;
+      margin-bottom: 5px;
+      span {
+        color: #666;
+        margin-left: 5px;
+      }
+    }
+
+    h6 {
+      font-size: 14px;
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+
+    .price {
+      margin-bottom: 10px;
+      .current-price {
+        color: #333;
+        font-size: 18px;
+        font-weight: 600;
+        margin-right: 10px;
+      }
+      .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 14px;
+      }
+    }
+
+    .price-range {
+      color: #333;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .tags {
+      margin-bottom: 10px;
+      .tag {
+        background-color: #f8f9fa;
+        padding: 3px 8px;
+        border-radius: 5px;
+        margin-right: 5px;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+    }
+
+    .stock-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      margin-top: 8px;
+
+      i {
+        &.fa-check-circle {
+          color: #1aba1a;
+        }
+        &.fa-times-circle {
+          color: #e74c3c;
+        }
+      }
+    }
+
+    .pre-order-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-add-cart {
+      width: 100%;
+      padding: 10px 20px;
+      background-color: #1aba1a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: auto;
+
+      &:hover {
+        background-color: #17a517;
+      }
+
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .shipping-badge {
+    color: #1aba1a;
+    font-size: 12px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .shipping-cost {
+    color: #666;
+    font-size: 12px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .btn-contact {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: auto;
+
+    &:hover {
+      background-color: #e9e9e9;
+      border-color: #ccc;
+    }
+  }
+}

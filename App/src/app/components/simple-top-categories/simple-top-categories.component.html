@@ -1,0 +1,38 @@
+<div class="simple-top-categories">
+  <div class="categories-header">
+    <h6 class="categories-title">TOP CATEGORIES</h6>
+    <a href="#" class="view-all-link" (click)="onViewAll(); $event.preventDefault()">
+      View All
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="errorMessage && !isLoading">
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+  
+  <!-- Categories Grid -->
+  <div class="categories-grid" *ngIf="!isLoading && categories.length > 0">
+    <a href="#" class="category-item" *ngFor="let category of categories" 
+       (click)="onCategoryClick(category); $event.preventDefault()"
+       (keyup.enter)="onCategoryClick(category); $event.preventDefault()"
+       (keyup.space)="onCategoryClick(category); $event.preventDefault()">
+      <div class="category-image">
+        <img [src]="category.imageUrl" 
+             [alt]="category.name"
+             (error)="onImageError($event)">
+      </div>
+      <h6 class="category-name">{{ category.name }}</h6>
+    </a>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && categories.length === 0 && !errorMessage">
+    <p>No categories available</p>
+  </div>
+</div>

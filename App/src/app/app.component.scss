@@ -1,0 +1,88 @@
+.app-container {
+  min-height: 100vh;
+  background-color: #F5F5F7; // Very light gray to match screenshot background
+}
+
+// Top Bar Section - moved to very top
+.top-bar-section {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 8px 0;
+  font-size: 13px;
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1330px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .hotline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+
+    i {
+      color: #1aba1a;
+      font-size: 12px;
+    }
+
+    strong {
+      color: #333;
+    }
+  }
+
+  .right-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    a {
+      color: #666;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #1aba1a;
+      }
+    }
+
+    .dropdown {
+      position: relative;
+
+      .dropbtn {
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #1aba1a;
+        }
+
+        img {
+          width: 16px;
+          height: 12px;
+        }
+
+        i.fas.fa-chevron-down {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}
+
+.main-content {
+  padding: 0; // Removed padding to eliminate extra space
+  min-height: calc(100vh - 160px); // Adjusted for proper height calculation
+}

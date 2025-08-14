@@ -1,0 +1,89 @@
+<div class="home-container">
+  <div class="main-content">
+    <app-category-menu></app-category-menu>
+    <div class="center-column">
+      <app-slider></app-slider>
+      <div class="bottom-banners">
+        <div class="banner">
+          <img src="assets/images/slider4.png" alt="Sono Playgo 5">
+          <div class="caption">
+            <h6>Sono Playgo 5</h6>
+            <p>from <span class="price">$569</span></p>
+            <a href="#" class="discover-link">DISCOVER NOW</a>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="assets/images/slider5.png" alt="Logitek Bluetooth Keyboard">
+          <div class="caption">
+            <h6>Logitek Bluetooth</h6>
+            <p class="keyboard-text">Keyboard</p>
+            <p>Best for all device</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-column">
+      <div class="banner top-banner">
+        <img src="assets/images/slider6.png" alt="Sport Watch">
+        <div class="banner-content">
+          <p class="brand-name">XOMIA</p>
+          <h6 class="product-title">Sport Water<br>Resistance<br>Watch</h6>
+          <a href="#" class="shop-now-btn">SHOP NOW</a>
+        </div>
+      </div>
+      <div class="banner bottom-banner">
+        <img src="assets/images/slider7.png" alt="Okodo Hero">
+        <div class="banner-content">
+          <h6 class="product-title">OKODO<br>HERO 11+<br>BLACK</h6>
+          <p class="from-text">FROM</p>
+          <p class="price-text">$169</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="brands-and-categories">
+    <app-featured-brands></app-featured-brands>
+    <app-simple-top-categories></app-simple-top-categories>
+  </div>
+
+  <!-- Deals and Promo Banner Section -->
+  <div class="deals-and-promo-section">
+    <app-deals [products]="cellphones" [categories]="cellphoneCategories" [promo]="cellphonePromo"></app-deals>
+    <div class="promo-banners-column">
+      <app-promo-banner [imageSrc]="'assets/images/ban1.png'" [altText]="'Promotional Banner 1'"></app-promo-banner>
+      <app-promo-banner [imageSrc]="'assets/images/slider1.png'" [altText]="'Promotional Banner 2'"></app-promo-banner>
+      <app-promo-banner [imageSrc]="'assets/images/ban2.png'" [altText]="'Promotional Banner 3'"></app-promo-banner>      
+    </div>
+  </div>
+
+
+  <app-product-carousel-tabs
+    [bestSellers]="bestSellers"
+    [newProducts]="newProducts"
+    [popularProducts]="popularProducts"
+    [isLoadingBestSellers]="isLoadingBestSellers"
+    [isLoadingNewProducts]="isLoadingNewProducts"
+    [isLoadingPopularProducts]="isLoadingPopularProducts">
+  </app-product-carousel-tabs>
+  
+  <app-brand-new></app-brand-new>
+  <app-product-list 
+  [title]="'top cellphones & tablets'" 
+  [products]="cellphones"
+  [categories]="cellphoneCategories"
+  [promotionalItem]="cellphonePromo">
+</app-product-list>
+
+<app-product-list 
+  [title]="'Best Laptops & Computers'" 
+  [products]="laptops"
+  [categories]="laptopCategories"
+  [promotionalItem]="laptopPromo">
+</app-product-list>
+
+<!-- Main Categories Section (AUDIOS & CAMERAS, GAMING, OFFICE EQUIPMENTS) -->
+<app-top-categories></app-top-categories>
+  
+  <app-recently-viewed></app-recently-viewed>
+</div> 

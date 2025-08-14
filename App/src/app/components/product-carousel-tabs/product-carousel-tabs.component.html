@@ -1,0 +1,27 @@
+<div class="product-carousel-tabs">
+  <div class="tabs-container">
+    <!-- Tab Headers -->
+    <div class="tab-header">
+      <div class="tabs">
+        <button 
+          *ngFor="let tab of tabs"
+          class="tab-button"
+          [class.active]="activeTab === tab.id"
+          (click)="setActiveTab(tab.id)">
+          {{ tab.label }}
+        </button>
+      </div>
+      <a href="#" class="view-all-link" (click)="onViewAll(); $event.preventDefault()">
+        View All
+      </a>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content" *ngIf="activeTabData">
+      <app-product-carousel 
+        [products]="activeTabData.products"
+        [isLoading]="activeTabData.isLoading">
+      </app-product-carousel>
+    </div>
+  </div>
+</div>

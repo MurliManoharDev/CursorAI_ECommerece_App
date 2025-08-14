@@ -1,0 +1,44 @@
+<div class="main-menu">
+  <div class="container">
+    <div class="search-container">
+      <div class="search-bar">
+        <div class="category-dropdown">
+          <select [(ngModel)]="selectedSearchCategory">
+            <option value="">All Categories</option>
+            <option *ngFor="let category of searchCategories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+        <input 
+          type="text" 
+          placeholder="Search anything..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchInputChange()"
+          (focus)="onSearchFocus()"
+          (blur)="onSearchBlur()"
+          (keyup.enter)="performSearch()"
+        >
+        <button class="search-btn" (click)="performSearch()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      
+      <!-- Search Suggestions Dropdown -->
+      <div class="search-suggestions" *ngIf="showSuggestions && searchSuggestions.length > 0">
+        <div class="suggestion-item" 
+             *ngFor="let suggestion of searchSuggestions"
+             (click)="selectSuggestion(suggestion)">
+          <i class="fas fa-search suggestion-icon"></i>
+          <span class="suggestion-text">{{ suggestion.name }}</span>
+          <span class="suggestion-category">in {{ suggestion.category }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="promo-text">
+      <span><i class="fas fa-shipping-fast"></i> Free shipping over $199</span>
+      <span><i class="fas fa-undo"></i> 30 days money back</span>
+      <span><i class="fas fa-lock"></i> 100% secure payment</span>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,150 @@
+<header>
+  <div class="container">
+    <div class="logo">
+      <a [routerLink]="['/']">
+        <img src="assets/images/logo.png" alt="Swoo Tech Mart">      
+      </a>
+    </div>
+    
+    
+    
+    <!-- Navigation menu with dropdowns -->
+    <nav class="category-nav" *ngIf="!isCategoriesLoading">
+      <!-- Main Category Links -->
+      <div class="nav-item" *ngFor="let menu of menuItems" 
+           [class.dropdown-open]="isDropdownOpen(menu.id)">
+        <a [routerLink]="['/products/category', menu.slug]"
+           (click)="$event.stopPropagation()"
+           (mouseenter)="menu.children[0].subcategories && menu.children[0].subcategories.length > 0 ? toggleDropdown(menu.id) : null">
+          {{ menu.title }}
+        </a>
+        
+        <!-- Mega Dropdown Menu (only show if category has subcategories) -->
+        <div class="mega-dropdown" 
+             [class.single-category]="menu.children.length === 1"
+             *ngIf="isDropdownOpen(menu.id) && menu.children[0].subcategories && menu.children[0].subcategories.length > 0"
+             (mouseleave)="closeDropdown()">
+          <div class="mega-dropdown-content">
+            <div class="category-column" *ngFor="let category of menu.children">
+              <h4 class="category-title">
+                <a [routerLink]="['/products/category', category.slug]"
+                   (click)="closeDropdown()">
+                  {{ category.name }}
+                </a>
+              </h4>
+              <ul class="subcategory-list" *ngIf="category.subcategories && category.subcategories.length > 0">
+                <li *ngFor="let subcategory of category.subcategories">
+                  <a [routerLink]="['/products/subcategory', subcategory.slug]"
+                     (click)="closeDropdown()">
+                    {{ subcategory.name }}
+                    <span class="item-count" *ngIf="subcategory.itemCount">({{ subcategory.itemCount }})</span>
+                  </a>
+                </li>
+              </ul>
+              <a [routerLink]="['/products/category', category.slug]" 
+                 class="view-all-link"
+                 (click)="closeDropdown()">
+                View All {{ category.name }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- View All Products Link -->
+      <div class="nav-item">
+        <a [routerLink]="['/products']">
+          All Products
+        </a>
+      </div>
+    </nav>
+    
+    <!-- Loading state for categories -->
+    <nav class="category-nav loading" *ngIf="isCategoriesLoading">
+      <div class="nav-item" *ngFor="let i of [1,2,3,4,5]">
+        <span class="skeleton-text"></span>
+      </div>
+    </nav>
+    
+    <div class="user-actions">
+      <a href="#" class="action-link wishlist-link"
+         (click)="navigateToWishlist(); $event.preventDefault()">
+        <i class="far fa-heart"></i>
+        <span class="action-text">Wishlist</span>
+        <span class="wishlist-count" *ngIf="wishlistCount > 0">
+          {{ wishlistCount }}
+        </span>
+      </a>
+      
+      <!-- User Account Section -->
+      <a href="#" class="action-link" *ngIf="!isLoggedIn" 
+         (click)="navigateToLogin(); $event.preventDefault()">
+        <i class="far fa-user"></i>
+        <div class="action-text">
+          <span class="small-text">Hello, Sign in</span>
+          <span class="main-text">Account & Lists</span>
+        </div>
+      </a>
+      
+      <div class="action-link-dropdown" *ngIf="isLoggedIn">
+        <a href="#" class="action-link"
+           (click)="toggleAccountDropdown(); $event.preventDefault()">
+          <i class="far fa-user"></i>
+          <div class="action-text">
+            <span class="small-text">Hello, {{ userName }}</span>
+            <span class="main-text">Account & Lists</span>
+          </div>
+        </a>
+        
+        <!-- Account Dropdown Menu -->
+        <div class="account-dropdown" *ngIf="isAccountDropdownOpen">
+          <div class="dropdown-arrow"></div>
+          <ul class="account-menu">
+            <li>
+              <a (click)="navigateToAccount(); closeAccountDropdown(); $event.preventDefault()">
+                <i class="fas fa-user-circle"></i>
+                My Account
+              </a>
+            </li>
+            <li>
+              <a routerLink="/my-orders" (click)="closeAccountDropdown()">
+                <i class="fas fa-box"></i>
+                My Orders
+              </a>
+            </li>
+            <li>
+              <a href="#" (click)="closeAccountDropdown(); $event.preventDefault()">
+                <i class="fas fa-heart"></i>
+                My Wishlist
+              </a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a (click)="logout(); closeAccountDropdown(); $event.preventDefault()">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <a href="#" class="action-link cart-link" 
+         (click)="navigateToCart(); $event.preventDefault()">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="action-text">
+          <span class="small-text">Cart</span>
+          <span class="main-text">${{ (cartSummary?.total || 0).toFixed(2) }}</span>
+        </div>
+        <span class="cart-count" *ngIf="cartSummary && cartSummary.itemCount > 0">
+          {{ cartSummary.itemCount }}
+        </span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Overlay to close dropdowns when clicking outside -->
+  <div class="dropdown-overlay" 
+       *ngIf="activeDropdown || isAccountDropdownOpen" 
+       (click)="closeDropdown()"></div>
+</header> 

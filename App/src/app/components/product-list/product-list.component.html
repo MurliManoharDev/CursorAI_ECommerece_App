@@ -1,0 +1,148 @@
+<div class="product-list">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header">
+      <h6 class="title">{{ title }}</h6>
+      <a href="#" class="view-all-link" *ngIf="showViewAll">
+        View All 
+        <i class="fas fa-chevron-right"></i>
+      </a>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="main-content">
+      <!-- Top Info Section - Matches Figma div.top-info -->
+      <div class="top-info">
+        <!-- Promotional Item - Matches Figma structure -->
+        <div class="promotional-item" *ngIf="promotionalItem">
+          <div class="promo-container">
+            <!-- div.img from Figma -->
+            <div class="img">
+              <img [src]="promotionalItem.imageUrl" [alt]="promotionalItem.title" class="promo-image">
+            </div>
+            <!-- div.info from Figma - positioned absolutely over the image -->
+            <div class="info">
+              <h5 class="promo-title">{{ promotionalItem.title }}</h5>
+              <p class="promo-description">{{ promotionalItem.description }}</p>
+              <a [href]="promotionalItem.buttonLink" class="promo-button">
+                {{ promotionalItem.buttonText }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories Grid - Exactly as in Figma -->
+        <div class="categories-grid" *ngIf="categories && categories.length > 0">
+          <a href="#" class="category-item" *ngFor="let category of categories">
+            <div class="category-content">
+              <h6 class="category-name">{{ category.name }}</h6>
+              <small class="category-count">{{ category.itemCount }} Items</small>
+            </div>
+            <div class="category-image">
+              <img [src]="category.imageUrl" [alt]="category.name">
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Product Carousel Section -->
+      <div class="product-carousel">
+        <div class="products-wrapper">
+          <div class="product-card" *ngFor="let product of getVisibleProducts()">
+            <!-- Product Image -->
+            <a href="#" class="product-image-link">
+              <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+            </a>
+
+            <!-- Rating -->
+            <div class="rating" *ngIf="product.rating > 0">
+              <div class="stars">
+                <i class="fas fa-star" 
+                   *ngFor="let star of getStarArray(product.rating)" 
+                   [class.filled]="star === 1"></i>
+              </div>
+              <span class="review-count">({{ product.reviews }})</span>
+            </div>
+
+            <!-- Product Title -->
+            <h6 class="product-title">
+              <a href="#">{{ product.name }}</a>
+            </h6>
+
+            <!-- Price Section -->
+            <div class="price-section">
+              <span class="current-price">${{ product.price.toFixed(2) }}</span>
+              <span class="old-price" *ngIf="product.oldPrice">${{ product.oldPrice.toFixed(2) }}</span>
+            </div>
+
+            <!-- Shipping Info -->
+            <div class="shipping-info">
+              <span class="shipping-badge free-shipping" *ngIf="product.freeShipping">
+                <i class="fas fa-check"></i>
+                free shipping
+              </span>
+              <span class="shipping-badge paid-shipping" *ngIf="!product.freeShipping && product.shippingCost">
+                ${{ product.shippingCost.toFixed(2) }} Shipping
+              </span>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="additional-info">
+              <span class="gift-badge" *ngIf="product.freeGift">
+                free gift
+              </span>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="stock-status">
+              <i class="fas fa-check-circle" *ngIf="product.inStock"></i>
+              <i class="fas fa-exclamation-circle" *ngIf="!product.inStock"></i>
+              <span *ngIf="product.inStock"> In stock</span>
+              <span *ngIf="!product.inStock && product.contactForPrice"> Contact</span>
+            </div>
+
+            <!-- Product Badges -->
+            <div class="product-badges">
+              <!-- Savings Badge -->
+              <div class="savings-badge" *ngIf="product.savings">
+                <small>save</small>
+                <h6>${{ product.savings.toFixed(2) }}</h6>
+              </div>
+              <!-- New Badge -->
+              <div class="new-badge" *ngIf="product.new">
+                <small>new</small>
+              </div>
+            </div>
+
+            <!-- Product Variants -->
+            <div class="product-variants" *ngIf="product.variants && product.variants.length > 0">
+              <img *ngFor="let variant of product.variants" 
+                   [src]="variant.imageUrl" 
+                   [alt]="product.name + ' variant'"
+                   class="variant-image">
+            </div>
+
+            <!-- Add to Cart Button -->
+            <button class="add-to-cart-btn">
+              <i class="fas fa-heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Controls -->
+      <div class="navigation-controls" *ngIf="showNavigation()">
+        <button class="nav-btn prev-btn" 
+                [disabled]="currentSlide === 0"
+                (click)="previousSlide()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-btn next-btn" 
+                [disabled]="currentSlide >= products.length - maxSlides"
+                (click)="nextSlide()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

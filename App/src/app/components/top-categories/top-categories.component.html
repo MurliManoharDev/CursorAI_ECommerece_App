@@ -1,0 +1,58 @@
+<div class="top-categories">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading categories...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="errorMessage && !isLoading">
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Categories Content -->
+  <div class="categories-container" *ngIf="!isLoading">
+    <div class="category-section" *ngFor="let category of mainCategories">
+      <!-- Category Header -->
+      <div class="category-header">
+        <h2 class="category-title">{{ category.title }}</h2>
+        <a href="#" class="view-all-link" (click)="onViewAll(category.id); $event.preventDefault()">
+          View All
+        </a>
+      </div>
+
+      <!-- Featured Product Section -->
+      <a href="#" class="featured-product" 
+         [style.background-color]="category.featuredProduct.backgroundColor"
+         (click)="onCategoryClick(category); $event.preventDefault()"
+         (keyup.enter)="onCategoryClick(category); $event.preventDefault()"
+         (keyup.space)="onCategoryClick(category); $event.preventDefault()">
+        <div class="featured-content">
+          <h3 class="featured-title">{{ category.featuredProduct.title }}</h3>
+          <p class="featured-description">{{ category.featuredProduct.description }}</p>
+        </div>
+        <div class="featured-image">
+          <img [src]="category.featuredProduct.imageUrl" [alt]="category.featuredProduct.title">
+        </div>
+      </a>
+
+      <!-- Subcategories Grid -->
+      <div class="subcategories-grid">
+        <a href="#" class="subcategory-item" 
+           *ngFor="let subcategory of category.subcategories"
+           [style.background-color]="subcategory.backgroundColor"
+           (click)="onCategoryClick(category, subcategory); $event.preventDefault()"
+           (keyup.enter)="onCategoryClick(category, subcategory); $event.preventDefault()"
+           (keyup.space)="onCategoryClick(category, subcategory); $event.preventDefault()">
+          <div class="subcategory-image">
+            <img [src]="subcategory.imageUrl" [alt]="subcategory.name">
+          </div>
+          <div class="subcategory-info">
+            <h4 class="subcategory-name">{{ subcategory.name }}</h4>
+            <p class="subcategory-count">{{ subcategory.itemCount }} Items</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div> 

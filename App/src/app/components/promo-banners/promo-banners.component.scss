@@ -1,0 +1,62 @@
+.promo-banners {
+  padding: 40px 0;
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .banner {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+    }
+
+    .caption {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+
+      h4 {
+        font-size: 40px;
+        margin: 0 0 10px;
+        color: #ffe400;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      &.dark {
+        color: #fff;
+        h4 {
+          color: #fff;
+        }
+      }
+
+      .send-link {
+        display: flex;
+        margin-top: 20px;
+        input {
+          padding: 10px;
+          border-radius: 5px 0 0 5px;
+          border: none;
+        }
+        button {
+          padding: 10px 20px;
+          border-radius: 0 5px 5px 0;
+          border: none;
+          background-color: #1bf11b;
+          color: #333;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+}

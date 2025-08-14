@@ -1,0 +1,45 @@
+<div class="brand-new">
+  <div class="container">
+    <!-- Header with title and navigation arrows -->
+    <div class="header-section">
+      <h6 class="main-title">brand new for you</h6>
+      <div class="arrows">
+        <button 
+          class="nav-button prev" 
+          (click)="previousSlide()"
+          [disabled]="currentSlide === 0"
+          title="Previous">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button 
+          class="nav-button next" 
+          (click)="nextSlide()"
+          [disabled]="currentSlide >= maxSlides"
+          title="Next">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- New brands slider -->
+    <div class="new-brands-slider">
+      <div class="brand-group" *ngFor="let item of getVisibleItems(); let i = index">
+        <!-- Product Image -->
+        <div class="product-image-container">
+          <img [src]="item.imageUrl" [alt]="item.title" class="product-image">
+        </div>
+        
+        <!-- Product Details -->
+        <div class="product-details">
+          <h6 class="product-title">{{ item.title }}</h6>
+          <p class="product-subtitle">{{ item.subtitle }}</p>
+          <div class="shop-button-container">
+            <button class="shop-now-button" (click)="onShopNow(item)">
+              shop now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

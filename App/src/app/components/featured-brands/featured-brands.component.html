@@ -1,0 +1,38 @@
+<div class="featured-brands">
+  <div class="brands-header">
+    <h6 class="brands-title">FEATURED BRANDS</h6>
+    <a href="#" class="view-all-link" (click)="onViewAll(); $event.preventDefault()">
+      View All <i class="fas fa-chevron-right"></i>
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading brands...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="errorMessage && !isLoading">
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Brands Grid -->
+  <div class="brands-grid" *ngIf="!isLoading && brands.length > 0">
+    <div class="brand-item" *ngFor="let brand of brands" 
+         (click)="onBrandClick(brand)"
+         [title]="brand.name">
+      <div class="brand-content">
+        <img [src]="brand.logoUrl || 'assets/images/logo.png'" 
+             [alt]="brand.name"
+             (error)="onImageError($event)">
+        <span class="brand-name">{{ brand.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && brands.length === 0 && !errorMessage">
+    <p>No brands available</p>
+  </div>
+</div> 

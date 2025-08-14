@@ -1,0 +1,53 @@
+<div class="category-menu">
+  <div class="sale-header">
+    <i class="fas fa-percent sale-icon"></i>
+    <span class="sale-text">SALE 40% OFF</span>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Loading categories...</span>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="errorMessage && !isLoading">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Category List -->
+  <ul class="category-list" *ngIf="!isLoading && !errorMessage">
+    <li class="category-item" 
+        *ngFor="let category of categories"
+        [class.active]="isSubmenuOpen(category.id)">
+      <i class="fas {{ getCategoryIcon(category) }} category-icon"></i>
+      <a href="#" 
+         class="category-link" 
+         [routerLink]="['/products/category', category.slug]"
+         (click)="category.subcategories && category.subcategories.length > 0 ? toggleSubmenu(category.id, $event) : null">
+        {{ category.name }}
+      </a>
+      <i class="fas fa-chevron-right arrow-icon" 
+         *ngIf="category.subcategories && category.subcategories.length > 0"></i>
+      
+      <!-- Subcategories Submenu -->
+      <ul class="submenu" 
+          *ngIf="category.subcategories && category.subcategories.length > 0"
+          [ngClass]="{'show': isSubmenuOpen(category.id)}">
+        <li *ngFor="let subcategory of category.subcategories">
+          <a [routerLink]="['/products/subcategory', subcategory.slug]">
+            <i class="fas fa-chevron-circle-right"></i>
+            {{ subcategory.name }}
+            <span class="item-count">({{ subcategory.itemCount }})</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- No Categories Message -->
+  <div class="no-categories" *ngIf="!isLoading && !errorMessage && categories.length === 0">
+    <p>No categories available</p>
+  </div>
+</div>

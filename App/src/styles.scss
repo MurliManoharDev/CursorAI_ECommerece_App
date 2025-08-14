@@ -1,0 +1,99 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F5F5F7; // Very light gray to match screenshot background
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1330px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Ensure the app takes full height */
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Global button styles */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &.btn-primary {
+    background-color: #1aba1a;
+    color: white;
+    
+    &:hover {
+      background-color: #159a15;
+    }
+  }
+  
+  &.btn-secondary {
+    background-color: #333;
+    color: white;
+    
+    &:hover {
+      background-color: #222;
+    }
+  }
+}
+
+/* Global link styles */
+a {
+  text-decoration: none;
+  color: inherit;
+  
+  &:hover {
+    color: #1aba1a;
+  }
+}
+
+/* Utility classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+} 

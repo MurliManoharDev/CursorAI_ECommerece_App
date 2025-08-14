@@ -1,0 +1,87 @@
+<div class="order-success-container">
+  <div class="success-content">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    
+    <h1>Order Placed Successfully!</h1>
+    <p class="success-message">Thank you for your purchase. Your order has been received and is being processed.</p>
+    
+    <div class="order-details" *ngIf="order">
+      <div class="order-number">
+        <h2>Order Number</h2>
+        <p class="order-id">{{order.orderNumber}}</p>
+      </div>
+      
+      <div class="order-info">
+        <div class="info-item">
+          <span class="label">Order Date:</span>
+          <span class="value">{{order.createdAt | date:'medium'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Total Amount:</span>
+          <span class="value">${{order.total.toFixed(2)}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Payment Method:</span>
+          <span class="value">{{getPaymentMethodDisplay(order.paymentMethod)}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Delivery Address:</span>
+          <span class="value">
+            {{order.streetAddress}}<span *ngIf="order.apartmentSuite">, {{order.apartmentSuite}}</span><br>
+            {{order.city}}, {{order.state}} {{order.zipCode}}<br>
+            {{order.country}}
+          </span>
+        </div>
+      </div>
+      
+      <div class="order-items">
+        <h3>Order Items</h3>
+        <div class="item" *ngFor="let item of order.orderItems">
+          <img [src]="item.productImage || '/assets/images/placeholder.png'" [alt]="item.productName">
+          <div class="item-details">
+            <h4>{{item.productName}}</h4>
+            <p>Quantity: {{item.quantity}} × ${{item.price.toFixed(2)}}</p>
+          </div>
+          <div class="item-total">
+            ${{item.total.toFixed(2)}}
+          </div>
+        </div>
+      </div>
+      
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>${{order.subtotal.toFixed(2)}}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span>${{order.shippingCost.toFixed(2)}}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span>${{order.tax.toFixed(2)}}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>${{order.total.toFixed(2)}}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="next-steps">
+      <h3>What happens next?</h3>
+      <ul>
+        <li>You will receive an order confirmation email shortly</li>
+        <li>We will notify you when your order is shipped</li>
+        <li>You can track your order status in My Orders section</li>
+      </ul>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn-primary" routerLink="/my-orders">View My Orders</button>
+      <button class="btn btn-secondary" routerLink="/">Continue Shopping</button>
+    </div>
+  </div>
+</div>

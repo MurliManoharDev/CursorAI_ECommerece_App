@@ -1,0 +1,49 @@
+<div class="wishlist-container">
+  <div class="wishlist-header">
+    <h1>My Wishlist ({{ wishlistItems.length }} items)</h1>
+    <button class="btn-clear" *ngIf="wishlistItems.length > 0" (click)="clearWishlist()">
+      <i class="fas fa-trash"></i> Clear All
+    </button>
+  </div>
+
+  <div class="wishlist-content" *ngIf="wishlistItems.length > 0">
+    <div class="wishlist-grid">
+      <div class="wishlist-item" *ngFor="let item of wishlistItems">
+        <div class="item-image" (click)="navigateToProduct(item.id)">
+          <img [src]="item.imageUrl" [alt]="item.name">
+          <span class="sale-badge" *ngIf="item.oldPrice">
+            -{{ ((item.oldPrice - item.price) / item.oldPrice * 100).toFixed(0) }}%
+          </span>
+        </div>
+        <div class="item-details">
+          <h3 (click)="navigateToProduct(item.id)">{{ item.name }}</h3>
+          <p class="category">{{ item.categoryName }}</p>
+          <div class="price-info">
+            <span class="current-price">${{ item.price.toFixed(2) }}</span>
+            <span class="original-price" *ngIf="item.oldPrice">
+              ${{ item.oldPrice.toFixed(2) }}
+            </span>
+          </div>
+          <p class="added-date">Added {{ item.addedAt | date:'short' }}</p>
+          <div class="item-actions">
+            <button class="btn-move-cart" (click)="moveToCart(item)">
+              <i class="fas fa-shopping-cart"></i> Move to Cart
+            </button>
+            <button class="btn-remove" (click)="removeFromWishlist(item.id)">
+              <i class="fas fa-times"></i> Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-wishlist" *ngIf="wishlistItems.length === 0">
+    <i class="far fa-heart"></i>
+    <h2>Your wishlist is empty</h2>
+    <p>Save items you like to your wishlist and come back to them anytime.</p>
+    <button class="btn-continue" (click)="continueShopping()">
+      Continue Shopping
+    </button>
+  </div>
+</div> 

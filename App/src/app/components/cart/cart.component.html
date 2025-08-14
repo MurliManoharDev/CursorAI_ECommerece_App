@@ -1,0 +1,154 @@
+<div class="cart-container">
+  <!-- Breadcrumb Section -->
+  <div class="breadcrumb-section">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-separator">/</li>
+        <li class="breadcrumb-item"><a href="#">pages</a></li>
+        <li class="breadcrumb-separator">/</li>
+        <li class="breadcrumb-item active" aria-current="page">cart</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Main Cart Section -->
+  <div class="cart-section">
+    <div class="cart-content">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        <!-- Cart Item Card -->
+        <div class="product-card" *ngFor="let item of cartItems$ | async">
+          <!-- Product Image -->
+          <a href="#" class="product-image">
+            <img [src]="item.image" [alt]="item.name">
+          </a>
+
+          <!-- Product Info -->
+          <div class="product-info">
+            <!-- Rating (if available) -->
+            <div class="rating-row" *ngIf="item.rating">
+              <div class="rating">
+                <span class="stars" *ngFor="let star of [1,2,3,4,5]">
+                  <i class="fas fa-star" [class.filled]="star <= item.rating"></i>
+                </span>
+              </div>
+              <span class="reviews" *ngIf="item.reviews">({{ item.reviews }})</span>
+            </div>
+
+            <!-- Product Name -->
+            <h6 class="product-name">
+              <a href="#">{{ item.name }}</a>
+            </h6>
+
+            <!-- Price -->
+            <h5 class="product-price">
+              ${{ item.price.toFixed(2) }}
+              <span class="original-price" *ngIf="item.originalPrice">
+                ${{ item.originalPrice.toFixed(2) }}
+              </span>
+            </h5>
+
+            <!-- Quantity Controls -->
+            <div class="quantity-controls">
+              <button 
+                class="qty-btn decrease" 
+                (click)="decreaseQuantity(item)"
+                (keyup.enter)="decreaseQuantity(item)"
+                (keyup.space)="decreaseQuantity(item)"
+                [disabled]="item.quantity <= 1"
+                aria-label="Decrease quantity">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="quantity">{{ item.quantity }}</span>
+              <button 
+                class="qty-btn increase" 
+                (click)="increaseQuantity(item)"
+                (keyup.enter)="increaseQuantity(item)"
+                (keyup.space)="increaseQuantity(item)"
+                aria-label="Increase quantity">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- Shipping Info -->
+            <div class="shipping-info">
+              <span class="shipping-tag" [class.free]="item.shipping === 'free shipping'">
+                {{ item.shipping }}
+              </span>
+              <span class="free-gift-tag" *ngIf="item.badges?.includes('free gift')">
+                free gift
+              </span>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="stock-status" *ngIf="item.inStock">
+              <i class="fas fa-check-circle"></i>
+              <span>In stock</span>
+            </div>
+          </div>
+
+          <!-- Discount Badge (if available) -->
+          <div class="discount-card" *ngIf="item.discount">
+            <small>save</small>
+            <h6>${{ item.discount.toFixed(2) }}</h6>
+          </div>
+
+          <!-- New Badge (if available) -->
+          <div class="badge new-badge" *ngIf="item.badges?.includes('new')">
+            new
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <a href="#" class="btn-action btn-wishlist">
+              <i class="far fa-heart"></i>
+            </a>
+            <a href="#" class="btn-action btn-remove" (click)="removeItem(item); $event.preventDefault()">
+              <i class="fas fa-trash"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Empty Cart Message -->
+        <div class="empty-cart" *ngIf="(cartItems$ | async)?.length === 0">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Your cart is empty</h3>
+          <p>Add some items to your cart to continue shopping</p>
+          <a routerLink="/" class="btn btn-primary">Continue Shopping</a>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary" *ngIf="cartSummary$ | async as summary">
+        <div class="summary-card">
+          <strong class="summary-title">Order Summary</strong>
+          
+          <div class="summary-item">
+            <span>Sub Total:</span>
+            <strong>${{ summary.subtotal.toFixed(2) }}</strong>
+          </div>
+          
+          <div class="summary-item">
+            <span>Shipping estimate:</span>
+            <strong>${{ summary.shippingEstimate.toFixed(2) }}</strong>
+          </div>
+          
+          <div class="summary-item">
+            <span>Tax estimate:</span>
+            <strong>${{ summary.taxEstimate.toFixed(2) }}</strong>
+          </div>
+          
+          <div class="summary-total">
+            <strong>Order total:</strong>
+            <strong class="total-amount">${{ summary.total.toFixed(2) }}</strong>
+          </div>
+          
+          <a routerLink="/checkout" class="btn btn-checkout">
+            checkout
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

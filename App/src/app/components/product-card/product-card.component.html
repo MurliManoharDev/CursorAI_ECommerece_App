@@ -1,0 +1,57 @@
+<div class="product-card" (click)="navigateToProduct()">
+  <div class="product-image">
+    <img [src]="product.imageUrl || product.image" [alt]="product.name">
+    <div class="wishlist-icon" 
+         [class.active]="isInWishlist"
+         (click)="toggleWishlist($event)"
+         title="Add to Wishlist">
+      <i [class.far]="!isInWishlist" 
+         [class.fas]="isInWishlist" 
+         class="fa-heart"></i>
+    </div>
+    <span class="new-tag" *ngIf="product.new || product.isNew">new</span>
+    <span class="sale-tag" *ngIf="(product.oldPrice || product.originalPrice) && product.price && (product.oldPrice || product.originalPrice) > product.price">
+      SAVE<br>${{ ((product.oldPrice || product.originalPrice) - product.price).toFixed(0) }}
+    </span>
+  </div>
+  <div class="product-info">
+    <div class="rating" *ngIf="product.rating && product.rating > 0">
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star-half-alt"></i>
+      <span>({{ product.reviews || product.reviewCount }})</span>
+    </div>
+    <h3>{{ product.name }}</h3>
+    <p class="price-range" *ngIf="product.priceRange">
+      ${{ product.priceRange.min.toFixed(2) }} - ${{ product.priceRange.max.toFixed(2) }}
+    </p>
+    <p class="price" *ngIf="!product.priceRange && product.price">
+      <span class="current-price">${{ product.price.toFixed(2) }}</span>
+      <span class="original-price" *ngIf="product.originalPrice || product.oldPrice">
+        ${{ (product.originalPrice || product.oldPrice).toFixed(2) }}
+      </span>
+    </p>
+    <p class="shipping-badge" *ngIf="product.freeShipping">free shipping</p>
+    <p class="shipping-cost" *ngIf="product.shippingCost && product.shippingCost > 0">
+      ${{ product.shippingCost.toFixed(2) }} SHIPPING
+    </p>
+    <div class="tags" *ngIf="product.tags">
+      <span class="tag" *ngFor="let tag of product.tags">{{ tag }}</span>
+    </div>
+    <div class="pre-order-label" *ngIf="product.preOrder">
+      PRE - ORDER
+    </div>
+    <div class="stock-status" *ngIf="product.inStock !== undefined && !product.preOrder">
+      <i class="fas" [ngClass]="{'fa-check-circle': product.inStock, 'fa-times-circle': !product.inStock}"></i>
+      <span>{{ product.inStock ? 'In stock' : 'Out of stock' }}</span>
+    </div>
+    <button class="btn-add-cart" (click)="addToCart($event)" *ngIf="product.inStock !== false">
+      <i class="fas fa-shopping-cart"></i> Add to Cart
+    </button>
+    <button class="btn-contact" *ngIf="product.contactForPrice || product.inStock === false">
+      Contact
+    </button>
+  </div>
+</div>

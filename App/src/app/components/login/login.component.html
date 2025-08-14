@@ -1,0 +1,104 @@
+<div class="login-container">
+  <!-- Breadcrumb Section -->
+  <div class="breadcrumb-section">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-separator">/</li>
+        <li class="breadcrumb-item"><a href="#">pages</a></li>
+        <li class="breadcrumb-separator">/</li>
+        <li class="breadcrumb-item active" aria-current="page">login</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Main Login Section -->
+  <div class="login-section">
+    <div class="login-content">
+      <!-- Left Side - Illustration -->
+      <div class="login-illustration">
+        <img src="assets/images/login-illustration.svg" alt="Login illustration">
+      </div>
+
+      <!-- Right Side - Login Form -->
+      <div class="login-form-container">
+        <h3 class="welcome-title">Welcome Back</h3>
+        <p class="login-subtitle">login to continue</p>
+
+        <!-- Success Message -->
+        <div class="alert alert-success" *ngIf="successMessage">
+          <i class="fas fa-check-circle"></i>
+          {{ successMessage }}
+        </div>
+
+        <!-- Error Message -->
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Email Address Field -->
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              class="form-control" 
+              placeholder="Example@gmail.com"
+              formControlName="email"
+              [class.is-invalid]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+            <div class="invalid-feedback" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+              <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+              <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="password-input-container">
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                id="password" 
+                class="form-control" 
+                placeholder="...."
+                formControlName="password"
+                [class.is-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+              <button
+                type="button"
+                class="password-toggle" 
+                (click)="togglePassword()"
+                (keyup.enter)="togglePassword()"
+                (keyup.space)="togglePassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+              <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+            </div>
+          </div>
+
+          <!-- Forget Password Link -->
+          <div class="forgot-password">
+            <a routerLink="/forgot-password" class="forgot-link">Forget Password ?</a>
+          </div>
+
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-login" [disabled]="loginForm.invalid || isLoading">
+            <span *ngIf="!isLoading">login</span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin"></i> Logging in...
+            </span>
+          </button>
+
+          <!-- Sign Up Link -->
+          <div class="signup-link">
+            <span>new user ? <a routerLink="/register">Sign Up</a></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

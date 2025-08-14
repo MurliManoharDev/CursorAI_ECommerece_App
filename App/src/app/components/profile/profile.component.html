@@ -1,0 +1,457 @@
+<div class="profile-container">
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/">Home</a>
+      </li>
+      <li class="breadcrumb-divider">/</li>
+      <li class="breadcrumb-item">
+        <a href="#">pages</a>
+      </li>
+      <li class="breadcrumb-divider">/</li>
+      <li class="breadcrumb-item active">profile</li>
+    </ol>
+  </nav>
+
+  <!-- Profile Content -->
+  <div class="profile-content">
+    <!-- Sidebar -->
+    <div class="profile-sidebar">
+      <!-- User Info -->
+      <div class="user-info">
+        <div class="avatar-container">
+          <img [src]="getAvatarUrl()" alt="User Avatar" class="user-avatar">
+        </div>
+        <h5 class="user-name">{{ userData?.name || 'Mark Cole' }}</h5>
+        <p class="user-email">{{ userData?.email || 'swoo@gmail.com' }}</p>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="profile-tabs">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'account-info'"
+          (click)="setActiveTab('account-info')">
+          <span>Account info</span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'my-order'"
+          (click)="setActiveTab('my-order')">
+          <span>My order</span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'my-address'"
+          (click)="setActiveTab('my-address')">
+          <span>My address</span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button 
+          class="tab-button"
+          [class.active]="activeTab === 'change-password'"
+          (click)="setActiveTab('change-password')">
+          <span>Change password</span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="profile-main">
+      <!-- Account Info Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'account-info'">
+        <h4 class="section-title">Account info</h4>
+
+        <!-- Success/Error Messages -->
+        <div class="alert alert-success" *ngIf="successMessage">
+          <i class="fas fa-check-circle"></i>
+          {{ successMessage }}
+        </div>
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ errorMessage }}
+        </div>
+
+        <!-- Profile Form -->
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input 
+                type="text" 
+                id="firstName"
+                class="form-control" 
+                formControlName="firstName"
+                [class.is-invalid]="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+              <div class="invalid-feedback" *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+                <span *ngIf="profileForm.get('firstName')?.errors?.['required']">First name is required</span>
+                <span *ngIf="profileForm.get('firstName')?.errors?.['minlength']">First name must be at least 2 characters</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input 
+                type="text" 
+                id="lastName"
+                class="form-control" 
+                formControlName="lastName"
+                [class.is-invalid]="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+              <div class="invalid-feedback" *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+                <span *ngIf="profileForm.get('lastName')?.errors?.['required']">Last name is required</span>
+                <span *ngIf="profileForm.get('lastName')?.errors?.['minlength']">Last name must be at least 2 characters</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="email">Email Address *</label>
+            <input 
+              type="email" 
+              id="email"
+              class="form-control" 
+              formControlName="email"
+              [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+            <div class="invalid-feedback" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+              <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required</span>
+              <span *ngIf="profileForm.get('email')?.errors?.['email']">Please enter a valid email address</span>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="phoneNumber">Phone Number (Optional)</label>
+            <input 
+              type="tel" 
+              id="phoneNumber"
+              class="form-control" 
+              formControlName="phoneNumber"
+              [class.is-invalid]="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched">
+            <div class="invalid-feedback" *ngIf="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched">
+              <span *ngIf="profileForm.get('phoneNumber')?.errors?.['pattern']">Please enter a valid phone number</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save" [disabled]="isLoading">
+            <span *ngIf="!isLoading">save</span>
+            <span *ngIf="isLoading">
+              <i class="fas fa-spinner fa-spin"></i> Saving...
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <!-- My Order Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'my-order'">
+        <h4 class="section-title">My order</h4>
+        <p class="empty-state">No orders found.</p>
+      </div>
+
+      <!-- My Address Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'my-address'">
+        <div class="address-header">
+          <h4 class="section-title">My Addresses</h4>
+          <button class="btn-add-address" (click)="showAddAddress()" *ngIf="!showAddressForm">
+            <i class="fas fa-plus"></i> Add New Address
+          </button>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div class="alert alert-success" *ngIf="addressSuccess">
+          <i class="fas fa-check-circle"></i>
+          {{ addressSuccess }}
+        </div>
+        <div class="alert alert-danger" *ngIf="addressError">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ addressError }}
+        </div>
+
+        <!-- Address Form -->
+        <div class="address-form-container" *ngIf="showAddressForm">
+          <h5 class="form-title">{{ editingAddressId ? 'Edit Address' : 'Add New Address' }}</h5>
+          <form [formGroup]="addressForm" (ngSubmit)="onSaveAddress()">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="addressType">Address Type *</label>
+                <select 
+                  id="addressType"
+                  class="form-control" 
+                  formControlName="addressType">
+                  <option value="shipping">Shipping Address</option>
+                  <option value="billing">Billing Address</option>
+                </select>
+              </div>
+              <div class="form-group checkbox-group">
+                <label for="isDefault">
+                  <input 
+                    type="checkbox" 
+                    id="isDefault"
+                    formControlName="isDefault">
+                  Set as default address
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="addressLine1">Address Line 1 *</label>
+              <input 
+                type="text" 
+                id="addressLine1"
+                class="form-control" 
+                placeholder="Street address, P.O. box, company name, etc."
+                formControlName="addressLine1"
+                [class.is-invalid]="addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched">
+              <div class="invalid-feedback" *ngIf="addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched">
+                <span *ngIf="addressForm.get('addressLine1')?.errors?.['required']">Address is required</span>
+                <span *ngIf="addressForm.get('addressLine1')?.errors?.['maxlength']">Address cannot exceed 255 characters</span>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="addressLine2">Address Line 2 (Optional)</label>
+              <input 
+                type="text" 
+                id="addressLine2"
+                class="form-control" 
+                placeholder="Apartment, suite, unit, building, floor, etc."
+                formControlName="addressLine2"
+                [class.is-invalid]="addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched">
+              <div class="invalid-feedback" *ngIf="addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched">
+                <span *ngIf="addressForm.get('addressLine2')?.errors?.['maxlength']">Address line 2 cannot exceed 255 characters</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City *</label>
+                <input 
+                  type="text" 
+                  id="city"
+                  class="form-control" 
+                  placeholder="City"
+                  formControlName="city"
+                  [class.is-invalid]="addressForm.get('city')?.invalid && addressForm.get('city')?.touched">
+                <div class="invalid-feedback" *ngIf="addressForm.get('city')?.invalid && addressForm.get('city')?.touched">
+                  <span *ngIf="addressForm.get('city')?.errors?.['required']">City is required</span>
+                  <span *ngIf="addressForm.get('city')?.errors?.['maxlength']">City cannot exceed 100 characters</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="stateProvince">State/Province</label>
+                <input 
+                  type="text" 
+                  id="stateProvince"
+                  class="form-control" 
+                  placeholder="State or Province"
+                  formControlName="stateProvince"
+                  [class.is-invalid]="addressForm.get('stateProvince')?.invalid && addressForm.get('stateProvince')?.touched">
+                <div class="invalid-feedback" *ngIf="addressForm.get('stateProvince')?.invalid && addressForm.get('stateProvince')?.touched">
+                  <span *ngIf="addressForm.get('stateProvince')?.errors?.['maxlength']">State/Province cannot exceed 100 characters</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="postalCode">Postal/ZIP Code</label>
+                <input 
+                  type="text" 
+                  id="postalCode"
+                  class="form-control" 
+                  placeholder="Postal or ZIP code"
+                  formControlName="postalCode"
+                  [class.is-invalid]="addressForm.get('postalCode')?.invalid && addressForm.get('postalCode')?.touched">
+                <div class="invalid-feedback" *ngIf="addressForm.get('postalCode')?.invalid && addressForm.get('postalCode')?.touched">
+                  <span *ngIf="addressForm.get('postalCode')?.errors?.['maxlength']">Postal code cannot exceed 20 characters</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="country">Country *</label>
+                <input 
+                  type="text" 
+                  id="country"
+                  class="form-control" 
+                  placeholder="Country"
+                  formControlName="country"
+                  [class.is-invalid]="addressForm.get('country')?.invalid && addressForm.get('country')?.touched">
+                <div class="invalid-feedback" *ngIf="addressForm.get('country')?.invalid && addressForm.get('country')?.touched">
+                  <span *ngIf="addressForm.get('country')?.errors?.['required']">Country is required</span>
+                  <span *ngIf="addressForm.get('country')?.errors?.['maxlength']">Country cannot exceed 100 characters</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" (click)="cancelAddressForm()">
+                Cancel
+              </button>
+              <button type="submit" class="btn-save" [disabled]="isSavingAddress">
+                <span *ngIf="!isSavingAddress">{{ editingAddressId ? 'Update Address' : 'Save Address' }}</span>
+                <span *ngIf="isSavingAddress">
+                  <i class="fas fa-spinner fa-spin"></i> Saving...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Address List -->
+        <div class="address-list" *ngIf="!showAddressForm">
+          <div class="address-card" *ngFor="let address of addresses">
+            <div class="address-type-badge" [class.billing]="address.addressType === 'billing'">
+              {{ address.addressType === 'shipping' ? 'Shipping' : 'Billing' }}
+            </div>
+            <div class="default-badge" *ngIf="address.isDefault">
+              <i class="fas fa-check"></i> Default
+            </div>
+            
+            <div class="address-content">
+              <p class="address-line">{{ address.addressLine1 }}</p>
+              <p class="address-line" *ngIf="address.addressLine2">{{ address.addressLine2 }}</p>
+              <p class="address-line">
+                {{ address.city }}<span *ngIf="address.stateProvince">, {{ address.stateProvince }}</span>
+                <span *ngIf="address.postalCode"> {{ address.postalCode }}</span>
+              </p>
+              <p class="address-line">{{ address.country }}</p>
+            </div>
+
+            <div class="address-actions">
+              <button class="btn-action" (click)="editAddress(address)" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action" (click)="setAsDefault(address.id)" 
+                      *ngIf="!address.isDefault" title="Set as default">
+                <i class="fas fa-star"></i>
+              </button>
+              <button class="btn-action btn-delete" (click)="confirmDeleteAddress(address.id)" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+
+            <!-- Delete Confirmation -->
+            <div class="delete-confirmation" *ngIf="deletingAddressId === address.id">
+              <p>Are you sure you want to delete this address?</p>
+              <div class="confirmation-actions">
+                <button class="btn-cancel-delete" (click)="cancelDelete()">Cancel</button>
+                <button class="btn-confirm-delete" (click)="deleteAddress(address.id)" [disabled]="isDeletingAddress">
+                  <span *ngIf="!isDeletingAddress">Delete</span>
+                  <span *ngIf="isDeletingAddress">
+                    <i class="fas fa-spinner fa-spin"></i> Deleting...
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="addresses.length === 0">
+            <i class="fas fa-map-marker-alt"></i>
+            <p>No addresses saved yet.</p>
+            <p class="empty-state-hint">Add a shipping or billing address to get started.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'change-password'">
+        <h4 class="section-title">Change Password</h4>
+
+        <!-- Success/Error Messages -->
+        <div class="alert alert-success" *ngIf="changePasswordSuccess">
+          <i class="fas fa-check-circle"></i>
+          {{ changePasswordSuccess }}
+        </div>
+        <div class="alert alert-danger" *ngIf="changePasswordError">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ changePasswordError }}
+        </div>
+
+        <!-- Change Password Form -->
+        <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePassword()">
+          <div class="form-group full-width">
+            <label for="currentPassword">Current Password *</label>
+            <div class="password-input-wrapper">
+              <input 
+                [type]="showCurrentPassword ? 'text' : 'password'" 
+                id="currentPassword"
+                class="form-control" 
+                formControlName="currentPassword"
+                placeholder="Enter your current password"
+                [class.is-invalid]="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched">
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('current')"
+                [attr.aria-label]="showCurrentPassword ? 'Hide password' : 'Show password'">
+                <i [class]="showCurrentPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback" *ngIf="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched">
+              <span *ngIf="changePasswordForm.get('currentPassword')?.errors?.['required']">Current password is required</span>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="newPassword">New Password *</label>
+            <div class="password-input-wrapper">
+              <input 
+                [type]="showNewPassword ? 'text' : 'password'" 
+                id="newPassword"
+                class="form-control" 
+                formControlName="newPassword"
+                placeholder="Enter your new password"
+                [class.is-invalid]="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched">
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('new')"
+                [attr.aria-label]="showNewPassword ? 'Hide password' : 'Show password'">
+                <i [class]="showNewPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback" *ngIf="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched">
+              <span *ngIf="changePasswordForm.get('newPassword')?.errors?.['required']">New password is required</span>
+              <span *ngIf="changePasswordForm.get('newPassword')?.errors?.['minlength']">Password must be at least 6 characters</span>
+              <span *ngIf="changePasswordForm.get('newPassword')?.errors?.['pattern']">Password must contain at least one letter and one number</span>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="confirmPassword">Confirm New Password *</label>
+            <div class="password-input-wrapper">
+              <input 
+                [type]="showConfirmPassword ? 'text' : 'password'" 
+                id="confirmPassword"
+                class="form-control" 
+                formControlName="confirmPassword"
+                placeholder="Confirm your new password"
+                [class.is-invalid]="(changePasswordForm.get('confirmPassword')?.invalid && changePasswordForm.get('confirmPassword')?.touched) || (changePasswordForm.errors?.['passwordMismatch'] && changePasswordForm.get('confirmPassword')?.touched)">
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility('confirm')"
+                [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+                <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback" *ngIf="changePasswordForm.get('confirmPassword')?.touched">
+              <span *ngIf="changePasswordForm.get('confirmPassword')?.errors?.['required']">Please confirm your new password</span>
+              <span *ngIf="changePasswordForm.errors?.['passwordMismatch']">Passwords do not match</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-save" [disabled]="isChangingPassword">
+            <span *ngIf="!isChangingPassword">Change Password</span>
+            <span *ngIf="isChangingPassword">
+              <i class="fas fa-spinner fa-spin"></i> Changing Password...
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

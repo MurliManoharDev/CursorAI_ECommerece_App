@@ -1,0 +1,37 @@
+<div class="product-carousel">
+  <div class="carousel-wrapper">
+    <!-- Navigation Arrows -->
+    <button class="nav-arrow nav-prev" (click)="scrollPrev()" [disabled]="!canScrollPrev">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <div class="carousel-container" #carouselContainer (scroll)="onScroll(carouselContainer)">
+      <!-- Loading State -->
+      <div class="carousel-track" *ngIf="isLoading">
+        <div class="product-skeleton" *ngFor="let i of [1,2,3,4,5]">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-price"></div>
+        </div>
+      </div>
+      
+      <!-- Products -->
+      <div class="carousel-track" *ngIf="!isLoading && products.length > 0" #carouselTrack>
+        <app-product-card 
+          *ngFor="let product of products" 
+          [product]="product"
+          class="carousel-item">
+        </app-product-card>
+      </div>
+      
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading && products.length === 0">
+        <p>No products available</p>
+      </div>
+    </div>
+    
+    <button class="nav-arrow nav-next" (click)="scrollNext()" [disabled]="!canScrollNext">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,249 @@
+<div class="product-listing-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/">Home</a>
+      </li>
+      <li class="breadcrumb-divider">/</li>
+      <li class="breadcrumb-item active">Products</li>
+    </ol>
+  </nav>
+
+  <div class="listing-content">
+    <!-- Left Sidebar -->
+    <aside class="category-sidebar">
+      <h3 class="sidebar-title">Categories</h3>
+      
+      <!-- Categories Loading State -->
+      <div class="categories-loading" *ngIf="isCategoriesLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading categories...</span>
+      </div>
+      
+      <!-- Category List -->
+      <ul class="category-list" *ngIf="!isCategoriesLoading">
+        <li *ngFor="let category of categories" class="category-item">
+          <div class="category-header" 
+               [class.active]="selectedCategoryId === category.id"
+               [class.expanded]="isCategoryExpanded(category.id)">
+            <a (click)="selectCategory(category.id)" class="category-link">
+              <i class="fas {{ getCategoryIcon(category) }}"></i>
+              <span>{{ category.name }}</span>
+              <span class="product-count">({{ category.productCount }})</span>
+            </a>
+            <button *ngIf="category.subcategories && category.subcategories.length > 0"
+                    class="expand-btn"
+                    (click)="toggleCategoryExpansion(category.id); $event.stopPropagation()">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          
+          <!-- Subcategories -->
+          <ul *ngIf="category.subcategories && isCategoryExpanded(category.id)" 
+              class="subcategory-list">
+            <li *ngFor="let subcategory of category.subcategories" 
+                class="subcategory-item"
+                [class.active]="selectedSubcategoryId === subcategory.id">
+              <a (click)="selectSubcategory(category.id, subcategory.id)">
+                {{ subcategory.name }}
+                <span class="item-count">({{ subcategory.itemCount }})</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- No Categories Message -->
+      <div class="no-categories" *ngIf="!isCategoriesLoading && categories.length === 0">
+        <p>No categories available</p>
+      </div>
+
+      <!-- Clear Filters -->
+      <button *ngIf="selectedCategoryId || selectedSubcategoryId || filters.searchTerm" 
+              class="clear-filters-btn"
+              (click)="clearFilters()">
+        <i class="fas fa-times"></i> Clear Filters
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="products-section">
+      <!-- Search and Controls Bar -->
+      <div class="controls-bar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" 
+                 [formControl]="searchControl" 
+                 placeholder="Search products..."
+                 class="search-input">
+        </div>
+
+        <div class="controls-right">
+          <!-- Sort Dropdown -->
+          <div class="sort-control">
+            <label>Sort by:</label>
+            <select [formControl]="sortControl" class="sort-select">
+              <option *ngFor="let option of sortOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="view-mode-toggle">
+            <button [class.active]="viewMode === 'grid'" 
+                    (click)="setViewMode('grid')"
+                    title="Grid View">
+              <i class="fas fa-th"></i>
+            </button>
+            <button [class.active]="viewMode === 'list'" 
+                    (click)="setViewMode('list')"
+                    title="List View">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Info -->
+      <div class="results-info" *ngIf="pagedResult">
+        <p>
+          Showing 
+          <strong>{{ (pagedResult.pageNumber - 1) * pagedResult.pageSize + 1 }}</strong>
+          -
+          <strong>{{ getMinValue(pagedResult.pageNumber * pagedResult.pageSize, pagedResult.totalCount) }}</strong>
+          of 
+          <strong>{{ pagedResult.totalCount }}</strong> 
+          products
+          <span *ngIf="filters.searchTerm"> for "{{ filters.searchTerm }}"</span>
+        </p>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-container" *ngIf="isLoading">
+        <div class="spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Loading products...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-container" *ngIf="errorMessage && !isLoading">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ errorMessage }}</p>
+        <button class="retry-btn" (click)="loadProducts()">Try Again</button>
+      </div>
+
+      <!-- Product Grid/List -->
+      <div class="products-container" 
+           [class.grid-view]="viewMode === 'grid'"
+           [class.list-view]="viewMode === 'list'"
+           *ngIf="!isLoading && !errorMessage">
+        
+        <!-- No Results -->
+        <div class="no-results" *ngIf="products.length === 0">
+          <i class="fas fa-search"></i>
+          <h3>No products found</h3>
+          <p>Try adjusting your filters or search terms</p>
+        </div>
+
+        <!-- Product Items -->
+        <div *ngFor="let product of products" 
+             class="product-item"
+             (click)="navigateToProduct(product)">
+          
+          <!-- Product Image -->
+          <div class="product-image">
+            <img [src]="product.imageUrl" 
+                 [alt]="product.name"
+                 loading="lazy">
+            <div class="product-badges">
+              <span class="badge badge-sale" *ngIf="product.isOnSale">
+                -{{ getDiscountPercentage(product.price, product.oldPrice || product.price) }}%
+              </span>
+              <span class="badge badge-shipping" *ngIf="product.freeShipping">
+                Free Shipping
+              </span>
+            </div>
+          </div>
+
+          <!-- Product Info -->
+          <div class="product-info">
+            <div class="product-category">{{ product.categoryName }}</div>
+            <h3 class="product-title">{{ product.name }}</h3>
+            <p class="product-subtitle" *ngIf="product.subtitle">{{ product.subtitle }}</p>
+            
+            <!-- Rating -->
+            <div class="product-rating" *ngIf="product.averageRating">
+              <span class="stars">
+                <i *ngFor="let star of getRatingStars(product.averageRating || 0)" 
+                   [class]="star"></i>
+              </span>
+              <span class="review-count">({{ product.reviewCount }})</span>
+            </div>
+
+            <!-- Price -->
+            <div class="product-price">
+              <span class="current-price">${{ product.price.toFixed(2) }}</span>
+              <span class="old-price" *ngIf="product.oldPrice">
+                ${{ product.oldPrice.toFixed(2) }}
+              </span>
+            </div>
+
+            <!-- Actions (for both grid and list view) -->
+            <div class="product-actions">
+              <button class="btn btn-add-cart" (click)="addToCart($event, product)">
+                <i class="fas fa-shopping-cart"></i>
+                <span *ngIf="viewMode === 'list'">Add to Cart</span>
+              </button>
+              <button class="btn btn-wishlist" 
+                      [class.active]="isInWishlist(product.id)"
+                      (click)="toggleWishlist($event, product)"
+                      title="Add to Wishlist">
+                <i [class.far]="!isInWishlist(product.id)" 
+                   [class.fas]="isInWishlist(product.id)" 
+                   class="fa-heart"></i>
+              </button>
+              <button class="btn btn-compare" title="Compare" *ngIf="viewMode === 'list'">
+                <i class="fas fa-exchange-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="pagination-container" *ngIf="pagedResult && pagedResult.totalPages > 1">
+        <ul class="pagination">
+          <!-- Previous Button -->
+          <li class="page-item" [class.disabled]="!pagedResult.hasPrevious">
+            <button class="page-link" 
+                    (click)="onPageChange(pagedResult.pageNumber - 1)"
+                    [disabled]="!pagedResult.hasPrevious">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          </li>
+
+          <!-- Page Numbers -->
+          <li *ngFor="let page of getPageNumbers()"
+              class="page-item"
+              [class.active]="page === pagedResult.pageNumber">
+            <button class="page-link" (click)="onPageChange(page)">
+              {{ page }}
+            </button>
+          </li>
+
+          <!-- Next Button -->
+          <li class="page-item" [class.disabled]="!pagedResult.hasNext">
+            <button class="page-link" 
+                    (click)="onPageChange(pagedResult.pageNumber + 1)"
+                    [disabled]="!pagedResult.hasNext">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </main>
+  </div>
+</div>

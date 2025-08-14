@@ -1,0 +1,466 @@
+<div class="product-detail-page">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading product details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="!isLoading && errorMessage">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>{{ errorMessage }}</p>
+    <button class="btn-retry" (click)="ngOnInit()">Try Again</button>
+  </div>
+
+  <!-- Product Content -->
+  <div *ngIf="!isLoading && !errorMessage" class="product-content">
+    <!-- Main Product Section -->
+    <div class="product-main-section">
+      <!-- Product Images Column -->
+      <div class="product-images-column">
+        <div class="main-image-container">
+          <img [src]="selectedImage.url" [alt]="product.name" class="main-image">
+        </div>
+        <div class="image-thumbnails">
+          <button
+            *ngFor="let image of productImages" 
+            class="thumbnail" 
+            [class.active]="selectedImage.id === image.id"
+            (click)="selectImage(image)">
+            <img [src]="image.url" [alt]="product.name">
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Info Column -->
+      <div class="product-info-column">
+        <button class="btn-wishlist-float" 
+                [class.active]="isInWishlist"
+                (click)="toggleWishlist()">
+          <i [class.far]="!isInWishlist" 
+             [class.fas]="isInWishlist" 
+             class="fa-heart"></i>
+        </button>
+
+        <div class="rating-section">
+          <div class="stars">
+            <i *ngFor="let star of [1,2,3,4,5]" 
+               class="far fa-star"></i>
+          </div>
+          <span class="review-count">({{ product.reviews || 0 }})</span>
+        </div>
+
+        <h1 class="product-title">{{ product.name }}</h1>
+        
+        <div class="price-section">
+          <span class="price">${{ product.price.toFixed(2) }}</span>
+        </div>
+
+        <!-- Product Features -->
+        <ul class="product-features">
+          <li *ngFor="let feature of productFeatures">
+            <span class="bullet">•</span>
+            {{ feature }}
+          </li>
+        </ul>
+
+        <!-- Shipping Badge -->
+        <div class="shipping-badge" *ngIf="product.freeShipping">
+          FREE SHIPPING
+        </div>
+
+        <!-- Color Selection -->
+        <div class="variant-section" *ngIf="colorVariants.length > 0">
+          <label class="variant-label">COLOR: <span>{{ selectedColor?.name || 'Default' }}</span></label>
+          <div class="color-options">
+            <button 
+              *ngFor="let color of colorVariants" 
+              class="color-option"
+              [class.selected]="selectedColor?.id === color.id"
+              (click)="selectColor(color)">
+              <img [src]="color.image || 'assets/images/prod1.png'" [alt]="color.name">
+              <span class="color-name">{{ color.name }}</span>
+              <span class="color-price">${{ color.price.toFixed(2) }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Memory Size Selection -->
+        <div class="variant-section" *ngIf="memoryVariants.length > 0">
+          <label class="variant-label">MEMORY SIZE: <span>{{ selectedMemory?.value || 'Standard' }}</span></label>
+          <div class="size-options">
+            <button 
+              *ngFor="let size of memoryVariants" 
+              class="size-option"
+              [class.selected]="selectedMemory?.id === size.id"
+              (click)="selectMemory(size)">
+              {{ size.value }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Gift Card Section -->
+        <div class="gift-section" *ngIf="product.hasGift">
+          <div class="gift-icon">
+            <i class="fas fa-gift"></i>
+          </div>
+          <div class="gift-info">
+            <ul>
+              <li>Buy 02 boxes get a Snack Tray</li>
+              <li>Buy 04 boxes get a free Block Toys</li>
+            </ul>
+            <p class="promotion-expiry">Promotion will expires in: 9h:00pm, 25/5/2024</p>
+          </div>
+        </div>
+
+        <!-- Product Meta -->
+        <div class="product-meta">
+          <div class="meta-item">
+            <strong>SKU:</strong> <span>{{ product.sku }}</span>
+          </div>
+          <div class="meta-item">
+            <strong>CATEGORY:</strong> <span>{{ product.category }}</span>
+          </div>
+          <div class="meta-item">
+            <strong>BRAND:</strong> <span>{{ product.brand }}</span>
+          </div>
+        </div>
+
+        <!-- Social Share -->
+        <div class="social-share">
+          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <!-- Purchase Column -->
+      <div class="purchase-column">
+        <div class="purchase-card">
+          <div class="total-price-section">
+            <span class="label">TOTAL PRICE:</span>
+            <h2 class="total-price">${{ product.price.toFixed(2) }}</h2>
+          </div>
+
+          <div class="payment-options">
+            <div class="payment-logo affirm">
+              <span class="affirm-text">affirm</span>
+            </div>
+            <div class="payment-text">
+              <strong>$49/mo</strong> in 12 months. See more
+            </div>
+          </div>
+
+          <div class="stock-status" *ngIf="product.inStock">
+            <i class="fas fa-check-circle"></i>
+            <span>In stock</span>
+          </div>
+
+          <!-- Quantity Selector -->
+          <div class="quantity-section">
+            <button class="qty-btn" (click)="decreaseQuantity()">
+              <i class="fas fa-minus"></i>
+            </button>
+            <input type="text" [(ngModel)]="quantity" readonly class="qty-input">
+            <button class="qty-btn" (click)="increaseQuantity()">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons-row">
+            <button class="btn-action" 
+                    [class.active]="isInWishlist"
+                    (click)="toggleWishlist()">
+              <i [class.far]="!isInWishlist" 
+                 [class.fas]="isInWishlist" 
+                 class="fa-heart"></i>
+              <span>Add to Wishlist</span>
+            </button>
+            <button class="btn-action">
+              <i class="fas fa-sync"></i>
+              <span>Compare</span>
+            </button>
+          </div>
+
+          <div class="safe-checkout">
+            <p>Guaranteed Safe Checkout</p>
+            <div class="payment-methods">
+              <i class="fab fa-cc-visa"></i>
+              <i class="fab fa-cc-mastercard"></i>
+              <i class="fab fa-cc-amex"></i>
+              <i class="fab fa-cc-paypal"></i>
+              <i class="fab fa-cc-discover"></i>
+            </div>
+          </div>
+
+          <button class="btn-add-to-cart" (click)="addToCart()">
+            ADD TO CART
+          </button>
+
+          <button class="btn-paypal" (click)="buyWithPayPal()">
+            BUY WITH <i class="fab fa-paypal"></i> PayPal
+          </button>
+        </div>
+
+        <!-- Quick Order Card -->
+        <div class="quick-order-card">
+          <div class="quick-order-header">
+            <i class="fas fa-phone"></i>
+            <span>Quick Order 24/7</span>
+          </div>
+          <h3>(025) 3886 25 16</h3>
+        </div>
+
+        <div class="shipping-info">
+          <i class="fas fa-truck"></i>
+          <span>Ships from United States</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Frequently Bought Together and Promo Banners Container -->
+    <div class="frequently-promo-container">
+      <!-- Frequently Bought Together -->
+      <section class="frequently-bought-section" *ngIf="product">
+        <h2 class="section-title">FREQUENTLY BOUGHT TOGETHER</h2>
+        <div class="frequently-bought-container" *ngIf="frequentlyBoughtProducts && frequentlyBoughtProducts.length > 0">
+          <div class="frequently-content">
+            <div class="products-display">
+              <div class="products-row">
+                <div class="product-item main-product">
+                  <img [src]="selectedImage.url" [alt]="product.name">
+                </div>
+                <div 
+                  *ngFor="let item of frequentlyBoughtProducts; let i = index; let last = last" 
+                  class="product-item-wrapper">
+                  <span class="plus-icon">+</span>
+                  <div class="product-item" [class.disabled]="!item.selected">
+                    <img [src]="item.imageUrl || 'assets/images/placeholder.png'" 
+                         [alt]="item.name"
+                         (error)="onFrequentlyBoughtImageError($event)">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="products-list">
+                <div class="list-item">
+                  <input type="checkbox" id="main-product-checkbox" checked disabled>
+                  <label for="main-product-checkbox">
+                    <span class="item-text">
+                      <strong>This item:</strong> {{ product.name }} 
+                      <span class="price-text">( <span class="price-value">${{ product.price.toFixed(2) }}</span> )</span>
+                    </span>
+                  </label>
+                </div>
+                <div *ngFor="let item of frequentlyBoughtProducts; let i = index" class="list-item">
+                  <input 
+                    type="checkbox" 
+                    [id]="'product-checkbox-' + i"
+                    [(ngModel)]="item.selected"
+                    (change)="onFrequentlyBoughtSelectionChange()">
+                  <label [for]="'product-checkbox-' + i">
+                    <span class="item-text">
+                      {{ item.name }} 
+                      <span class="price-text">( <span class="price-value">${{ item.price.toFixed(2) }}</span> )</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="frequently-actions">
+              <div class="total-section">
+                <span class="total-label">TOTAL PRICE:</span>
+                <h3 class="total-price">${{ getTotalFrequentlyBoughtPrice().toFixed(2) }}</h3>
+              </div>
+              <button class="btn-add-all" (click)="addAllToCart()">
+                ADD TO CART
+              </button>
+              <button class="btn-wishlist-all">
+                <i class="far fa-heart"></i>
+                Add all to Wishlist
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="no-frequently-bought" *ngIf="!frequentlyBoughtProducts || frequentlyBoughtProducts.length === 0">
+          <p>No frequently bought together products available for this item.</p>
+        </div>
+      </section>
+
+      <!-- Promotional Banners -->
+      <section class="promo-banners">
+        <div class="banner gaming-banner">
+          <img src="assets/images/gaming-controllers.jpg" alt="Gaming Controllers Sale">
+          <div class="banner-content">
+            <span class="sale-badge">50%</span>
+            <h3>SALE</h3>
+            <p>Gaming Controllers</p>
+          </div>
+        </div>
+        <div class="banner ipad-banner">
+          <img src="assets/images/ipad-promo.jpg" alt="iPad Pro Mini 5">
+          <div class="banner-content dark">
+            <h3>oPad Pro<br>Mini 5</h3>
+            <div class="price-from">
+              <span>FROM</span>
+              <span class="price">$169</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Product Description Section -->
+    <section class="product-description-section">
+      <div class="tabs-container">
+        <div class="tabs-header">
+          <button 
+            class="tab-button" 
+            [class.active]="activeTab === 'description'"
+            (click)="setActiveTab('description')">
+            Description
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="activeTab === 'reviews'"
+            (click)="setActiveTab('reviews')">
+            Reviews ({{ product.reviews }})
+          </button>
+          <button 
+            class="tab-button" 
+            [class.active]="activeTab === 'additional'"
+            (click)="setActiveTab('additional')">
+            Additional Information
+          </button>
+        </div>
+
+        <div class="tab-content">
+          <div *ngIf="activeTab === 'description'" class="description-content">
+            <div class="description-wrapper">
+              <p>{{ product.description }}</p>
+              
+              <div class="product-detail-image" *ngIf="product.id">
+                <div class="image-wrapper">
+                  <img src="assets/images/prod{{ product.id }}.png" 
+                       [alt]="product.name"
+                       (error)="onProductImageError($event)">
+                </div>
+                <p class="image-caption">
+                  * High-quality product image showcasing the main features
+                </p>
+              </div>
+              
+              <h3>From the manufacturer</h3>
+              <p>
+                Experience cutting-edge technology with our premium products. 
+                Built with quality materials and designed for optimal performance, 
+                our products deliver exceptional value and reliability.
+              </p>
+              
+              <div class="detail-images">
+                <div class="image-wrapper">
+                  <img src="assets/images/prod2.png" alt="Product Detail">
+                </div>
+                <div class="image-wrapper">
+                  <img src="assets/images/prod3.png" alt="Product Detail">
+                </div>
+              </div>
+              
+              <button class="btn-show-more">
+                Show More <i class="fas fa-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="activeTab === 'reviews'" class="reviews-content">
+            <p>No reviews yet. Be the first to write a review!</p>
+          </div>
+
+          <div *ngIf="activeTab === 'additional'" class="additional-content">
+            <p>Additional product information will be displayed here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Products Section -->
+    <section class="related-products-section">
+      <h2 class="section-title">Related Products</h2>
+      <div class="products-grid">
+        <div *ngFor="let product of relatedProducts" 
+             class="product-card"
+             (click)="navigateToProduct(product.id)"
+             style="cursor: pointer;">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name">
+            <span class="badge-save" *ngIf="product.discount">
+              SAVE<br>
+              ${{ product.discount.toFixed(0) }}
+            </span>
+          </div>
+          <div class="product-info">
+            <div class="rating" *ngIf="product.rating">
+              <div class="stars">
+                <i *ngFor="let star of getStarArray(product.rating)" 
+                   [class]="star ? 'fas fa-star' : 'far fa-star'"></i>
+              </div>
+              <span>({{ product.reviews }})</span>
+            </div>
+            <h4>{{ product.name }}</h4>
+            <div class="price-info">
+              <span class="current-price">${{ product.price.toFixed(2) }}</span>
+              <span class="original-price" *ngIf="product.originalPrice">
+                ${{ product.originalPrice.toFixed(2) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recently Viewed -->
+    <section class="recently-viewed-section">
+      <div class="section-header">
+        <h2 class="section-title">Your Recently Viewed</h2>
+        <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+      </div>
+      
+      <div class="recently-viewed-grid">
+        <div *ngFor="let product of recentlyViewedProducts" 
+             class="recent-product"
+             (click)="navigateToProduct(product.id)"
+             style="cursor: pointer;">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name">
+            <span class="badge-new" *ngIf="product.isNew">new</span>
+            <span class="badge-save" *ngIf="product.discount">
+              SAVE<br>
+              ${{ product.discount.toFixed(0) }}
+            </span>
+          </div>
+          <div class="product-info">
+            <div class="rating" *ngIf="product.rating">
+              <div class="stars">
+                <i *ngFor="let star of getStarArray(product.rating)" 
+                   [class]="star ? 'fas fa-star' : 'far fa-star'"></i>
+              </div>
+              <span>({{ product.reviews }})</span>
+            </div>
+            <h4>{{ product.name }}</h4>
+            <div class="price-info">
+              <span class="current-price">${{ product.price.toFixed(2) }}</span>
+              <span class="price-range" *ngIf="product.priceMax"> - ${{ product.priceMax.toFixed(2) }}</span>
+              <span class="original-price" *ngIf="product.originalPrice">
+                ${{ product.originalPrice.toFixed(2) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

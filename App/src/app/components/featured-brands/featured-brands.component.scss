@@ -1,0 +1,175 @@
+.featured-brands {
+  background-color: #fff;
+  padding: 30px 20px;  // Reduced padding
+  margin: 0;  // Removed margin
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 100%;  // Take full height of parent
+  box-sizing: border-box;  // Include padding in height calculation
+
+  .brands-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;  // Reduced margin
+
+    .brands-title {
+      font-size: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin: 0;
+      color: #333;
+    }
+
+    .view-all-link {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #333;
+      }
+
+      i {
+        font-size: 12px;
+      }
+    }
+  }
+
+  // Loading state
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;  // Reduced from 120px
+    
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    p {
+      margin-top: 15px;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+  
+  // Error state
+  .error-container {
+    text-align: center;
+    padding: 30px;
+    
+    .error-message {
+      color: #dc2626;
+      font-size: 14px;
+    }
+  }
+
+  // Empty state
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .brands-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;  // Reduced from 20px
+    width: 100%;  // Ensure full width
+    overflow: hidden;  // Prevent overflow
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 992px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 576px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;  // Even smaller gap on mobile
+    }
+
+    .brand-item {
+      background-color: #ffffff;  // Changed to white for better contrast
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);  // Subtle gradient
+      border-radius: 8px;
+      padding: 15px;  // Reduced from 25px
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80px;  // Reduced from 100px
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;  // Added for better image positioning
+      border: 1px solid #e5e7eb;  // Added subtle border
+
+      &:hover {
+        background-color: #f9fafb;  // Light gray on hover
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #d1d5db;  // Darker border on hover
+      }
+
+      .brand-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      img {
+        max-width: 80px;   // Reduced from 120px
+        max-height: 50px;  // Reduced from 80px
+        min-width: 40px;   // Reduced from 60px
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        filter: grayscale(0%);  // Changed from 100% to 0% - show full color
+        opacity: 1;             // Changed to full opacity
+        transition: all 0.3s ease;
+        image-rendering: -webkit-optimize-contrast;  // Better rendering for small images
+        image-rendering: crisp-edges;  // Fallback for other browsers
+      }
+
+      .brand-name {
+        font-size: 11px;  // Reduced from 12px
+        color: #666;
+        text-align: center;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        white-space: nowrap;  // Prevent text wrapping
+        overflow: hidden;  // Hide overflow text
+        text-overflow: ellipsis;  // Add ellipsis for long names
+      }
+
+      &:hover img {
+        filter: grayscale(0%);
+        opacity: 1;
+        transform: scale(1.2);  // Increased from 1.1
+      }
+
+      &:hover .brand-name {
+        color: #333;
+      }
+    }
+  }
+} 

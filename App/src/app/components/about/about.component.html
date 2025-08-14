@@ -1,0 +1,161 @@
+<div class="about-container">
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb-nav">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/">Home</a>
+      </li>
+      <li class="breadcrumb-divider">/</li>
+      <li class="breadcrumb-item">
+        <a href="#">pages</a>
+      </li>
+      <li class="breadcrumb-divider">/</li>
+      <li class="breadcrumb-item active">about</li>
+    </ol>
+  </nav>
+
+  <!-- Main Content Section -->
+  <section class="about-main">
+    <div class="main-card">
+      <!-- Hero Banner -->
+      <div class="about-banner">
+        <h1 class="banner-title">
+          Best experience<br>
+          always wins
+        </h1>
+        <p class="banner-subtitle">
+          #1 Online Marketplace for Electronic & Technology<br>
+          in Manhattan, CA
+        </p>
+      </div>
+
+      <!-- Purpose Statement -->
+      <h6 class="purpose-text">
+        our purpose is to enrich<br>
+        and enhance lives through<br>
+        technology
+      </h6>
+
+      <!-- Statistics -->
+      <div class="stats-section">
+        <div class="stat-item">
+          <h2 class="stat-number">{{ stats.revenue }}</h2>
+          <p class="stat-description">{{ stats.revenueDescription }}</p>
+        </div>
+        <div class="stat-item">
+          <h2 class="stat-number">{{ stats.orders }}</h2>
+          <p class="stat-description">{{ stats.ordersDescription }}</p>
+        </div>
+        <div class="stat-item">
+          <h2 class="stat-number">{{ stats.stores }}</h2>
+          <p class="stat-description">{{ stats.storesDescription }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Image and Info Section -->
+    <div class="about-content">
+      <div class="about-image">
+        <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=646&h=420&fit=crop" alt="About Us">
+      </div>
+      <div class="info-card">
+        <h6 class="info-title">
+          We connect millions of buyers and sellers around<br>
+          the world, empowering people & creating economic<br>
+          opportunity for all.
+        </h6>
+        <p class="info-description">
+          Within our markets, millions of people around the world connect,<br>
+          both online and offline, to make, sell and buy unique goods. We also<br>
+          offer a wide range of Seller Services and tools that help creative<br>
+          entrepreneurs start, manage & scale their businesses.
+        </p>
+        <a href="#" class="showreel-btn">
+          <i class="fas fa-play"></i>
+          <span>our showreel</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <div class="features-wrapper">
+    <section class="feature-card" *ngFor="let feature of features">
+      <h6 class="feature-title">{{ feature.title }}</h6>
+      <span class="feature-icon">
+        <i [class]="feature.icon"></i>
+      </span>
+      <p class="feature-description">{{ feature.description }}</p>
+    </section>
+  </div>
+
+  <!-- Mission and Timeline Section -->
+  <section class="mission-timeline">
+    <div class="mission-content">
+      <h6 class="section-title">our mission and vision</h6>
+      <p class="mission-text">
+        Nam maximus nunc a augue pulvinar, non euismod mauris tempus. Cras non elit vel magna molestie pellentesque in eu dui. Donec laoreet quis erat vitae finibus. Vestibulum enim eros, porta eget<br>
+        quam et, euismod dictum elit. Nullam eu tempus magna. Fusce malesuada nisi id felis placerat porta vel sed augue. Vivamus mollis mauris vitae rhoncus egestas. Pellentesque habitant morbi<br>
+        tristique senectus et netus et malesuada fames ac turpis egestas.
+      </p>
+      <div class="mission-image">
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1300&h=400&fit=crop" alt="Our Mission">
+        <div class="play-button">
+          <div class="play-icon">
+            <i class="fas fa-play"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-content">
+      <h6 class="section-title">from a retail store to the global chain of stores</h6>
+      <p class="timeline-intro">
+        Pellentesque laoreet justo nec ex sodales euismod. Aliquam orci tortor, bibendum nec ultricies ac, auctor nec purus. Maecenas in consectetur erat.
+      </p>
+      
+      <div class="timeline-wrapper">
+        <div class="timeline-column">
+          <div class="timeline-item" *ngFor="let item of timelineLeft">
+            <strong>{{ item.year }}</strong> {{ item.description }}
+          </div>
+        </div>
+        <div class="timeline-column">
+          <div class="timeline-item" *ngFor="let item of timelineRight">
+            <strong>{{ item.year }}</strong> {{ item.description }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leadership Section -->
+    <div class="leadership-section">
+      <div class="leadership-header">
+        <h6 class="section-title">leaderships</h6>
+        <a href="#" class="view-all">
+          View All
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="team-grid">
+        <div class="team-member" *ngFor="let member of teamMembers">
+          <div class="member-image">
+            <img [src]="member.image" [alt]="member.name">
+          </div>
+          <h6 class="member-name">{{ member.name }}</h6>
+          <small class="member-position">{{ member.position }}</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promotional Banner -->
+  <section class="promo-banner">
+    <img src="assets/images/star.png" alt="Star" class="star-icon">
+    <span class="promo-text">Member get</span>
+    <span class="promo-highlight">FREE SHIPPING*</span>
+    <span class="promo-text">with no order minimum!. *Restriction apply</span>
+    <a href="#" class="promo-link">Try free 30-days trial!</a>
+  </section>
+</div>
