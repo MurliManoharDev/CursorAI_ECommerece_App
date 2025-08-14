@@ -25,4 +25,14 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
+  <!-- Include wwwroot folder for Angular app -->
+  <ItemGroup>
+    <Content Include="wwwroot\**" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Ensure wwwroot folder exists -->
+  <Target Name="EnsureWwwrootExists" BeforeTargets="Build">
+    <MakeDir Directories="$(ProjectDir)wwwroot" Condition="!Exists('$(ProjectDir)wwwroot')" />
+  </Target>
+
 </Project> 

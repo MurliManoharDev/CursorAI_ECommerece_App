@@ -40,10 +40,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp",
-        builder => builder.WithOrigins("http://localhost:4200")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
+        policy =>
+        {
+            var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>();
+            if (corsOrigins != null && corsOrigins.Length > 0)
+            {
+                policy.WithOrigins(corsOrigins);
+            }
+            else
+            {
+                // Default to localhost for development
+                policy.WithOrigins("http://localhost:4200");
+            }
+            
+            policy.AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
 });
 
 // Register Services
@@ -68,12 +81,26 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Configure static files to serve Angular app (in production)
+if (!app.Environment.IsDevelopment())
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
+
 app.UseCors("AllowAngularApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map API controllers
 app.MapControllers();
+
+// In production, add fallback to index.html for Angular routing
+if (!app.Environment.IsDevelopment())
+{
+    app.MapFallbackToFile("index.html");
+}
 
 // Ensure database is created and up to date
 using (var scope = app.Services.CreateScope())

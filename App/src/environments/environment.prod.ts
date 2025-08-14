@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5000/api' // Update this to your production API URL
+  apiUrl: '/api' // Relative path since API and app are on same domain
 }; 
