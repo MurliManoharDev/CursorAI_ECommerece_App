@@ -25,10 +25,7 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
-  <!-- Include wwwroot folder for Angular app -->
-  <ItemGroup>
-    <Content Include="wwwroot\**" CopyToPublishDirectory="PreserveNewest" />
-  </ItemGroup>
+  <!-- wwwroot is included automatically by .NET SDK, no need for explicit include -->
 
   <!-- Ensure wwwroot folder exists -->
   <Target Name="EnsureWwwrootExists" BeforeTargets="Build">

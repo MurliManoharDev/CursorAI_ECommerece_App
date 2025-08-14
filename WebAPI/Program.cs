@@ -78,6 +78,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // Enable Swagger in Production for testing (remove this after testing!)
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "EcommerceAPI v1");
+        c.RoutePrefix = "api/swagger"; // Serve Swagger UI at /api/swagger
+    });
+}
 
 app.UseHttpsRedirection();
 
