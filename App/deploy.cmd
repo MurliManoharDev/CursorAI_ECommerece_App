@@ -58,7 +58,7 @@ echo Handling Angular deployment.
 IF EXIST "%DEPLOYMENT_SOURCE%\package.json" (
   pushd "%DEPLOYMENT_SOURCE%"
   echo Installing npm packages...
-  call :ExecuteCmd npm install --production
+  call :ExecuteCmd npm install
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
