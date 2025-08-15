@@ -1,0 +1,5 @@
+{
+    "appService.preDeployTask": "publish-release",
+    "appService.deploySubpath": "WebAPI\\bin\\Release\\net8.0\\publish",
+    "appService.defaultWebAppToDeploy": "/subscriptions/b2371b64-0a61-4350-9dcc-299e333eaafd/resourceGroups/CTS-VibeAppau281/providers/Microsoft.Web/sites/CTS-VibeAppau2812-1"
+}
