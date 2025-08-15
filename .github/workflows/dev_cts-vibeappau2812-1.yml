@@ -52,4 +52,4 @@ jobs:
           app-name: 'CTS-VibeAppau2812-1'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_49EB6F4F6CE14F30A03FF088EEC1CF57 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_45C41B27684F40C98F7D09164F69C7C4 }}
