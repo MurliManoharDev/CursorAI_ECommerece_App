@@ -146,7 +146,7 @@ namespace EcommerceAPI.Data
 
             if (frequentlyBoughtItems.Any())
             {
-                context.FrequentlyBoughtTogether.AddRange(frequentlyBoughtItems);
+                                context.FrequentlyBoughtTogether.AddRange(frequentlyBoughtItems);
                 context.SaveChanges();
             }
         }

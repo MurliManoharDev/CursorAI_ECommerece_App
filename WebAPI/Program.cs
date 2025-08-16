@@ -15,7 +15,31 @@ builder.Services.AddSwaggerGen();
 
 // Configure SQLite Database
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    // For production on Azure Linux App Service, ensure database is in writable location
+    if (builder.Environment.IsProduction())
+    {
+        if (string.IsNullOrEmpty(connectionString) || !connectionString.Contains("/home/"))
+        {
+            connectionString = "Data Source=/home/ecommerce.db";
+        }
+        
+        // Ensure the directory exists
+        if (!string.IsNullOrEmpty(connectionString))
+        {
+            var dbPath = connectionString.Replace("Data Source=", "");
+            var directory = Path.GetDirectoryName(dbPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+        }
+    }
+    
+    options.UseSqlite(connectionString);
+});
 
 // Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -91,12 +115,9 @@ else
 
 app.UseHttpsRedirection();
 
-// Configure static files to serve Angular app (in production)
-if (!app.Environment.IsDevelopment())
-{
-    app.UseDefaultFiles();
-    app.UseStaticFiles();
-}
+// Configure static files to serve Angular app
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseCors("AllowAngularApp");
 
@@ -106,11 +127,8 @@ app.UseAuthorization();
 // Map API controllers
 app.MapControllers();
 
-// In production, add fallback to index.html for Angular routing
-if (!app.Environment.IsDevelopment())
-{
-    app.MapFallbackToFile("index.html");
-}
+// Add fallback to index.html for Angular routing
+app.MapFallbackToFile("index.html");
 
 // Ensure database is created and up to date
 using (var scope = app.Services.CreateScope())

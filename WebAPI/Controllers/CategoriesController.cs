@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EcommerceAPI.DTOs;
 using EcommerceAPI.Services.Interfaces;
+using EcommerceAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Controllers
 {
@@ -10,10 +12,84 @@ namespace EcommerceAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly EcommerceDbContext _context;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService, EcommerceDbContext context)
         {
             _categoryService = categoryService;
+            _context = context;
+        }
+
+        // TEMPORARY: Database diagnostic endpoint
+        [HttpGet("db-test")]
+        public IActionResult TestDatabase()
+        {
+            try
+            {
+                var connectionString = _context.Database.GetDbConnection().ConnectionString;
+                var dbPath = connectionString?.Replace("Data Source=", "");
+                
+                var dbExists = !string.IsNullOrEmpty(dbPath) && System.IO.File.Exists(dbPath);
+                var homeDbExists = System.IO.File.Exists("/home/ecommerce.db");
+                var localDbExists = System.IO.File.Exists("ecommerce.db");
+                var wwwrootDbExists = System.IO.File.Exists("/home/site/wwwroot/ecommerce.db");
+                
+                // Try to count records
+                int categoryCount = 0;
+                int productCount = 0;
+                string error = null;
+                
+                try
+                {
+                    categoryCount = _context.Categories.Count();
+                    productCount = _context.Products.Count();
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                }
+                
+                // Check write permissions
+                bool canWriteHome = false;
+                bool canWriteLocal = false;
+                
+                try
+                {
+                    System.IO.File.WriteAllText("/home/test.txt", "test");
+                    System.IO.File.Delete("/home/test.txt");
+                    canWriteHome = true;
+                }
+                catch { }
+                
+                try
+                {
+                    System.IO.File.WriteAllText("test.txt", "test");
+                    System.IO.File.Delete("test.txt");
+                    canWriteLocal = true;
+                }
+                catch { }
+                
+                return Ok(new
+                {
+                    environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
+                    connectionString = connectionString,
+                    dbPath = dbPath,
+                    dbExists = dbExists,
+                    homeDbExists = homeDbExists,
+                    localDbExists = localDbExists,
+                    wwwrootDbExists = wwwrootDbExists,
+                    categoryCount = categoryCount,
+                    productCount = productCount,
+                    error = error,
+                    canWriteHome = canWriteHome,
+                    canWriteLocal = canWriteLocal,
+                    currentDirectory = Directory.GetCurrentDirectory()
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { mainError = ex.Message, stackTrace = ex.StackTrace });
+            }
         }
 
         [HttpGet]
